@@ -62,7 +62,7 @@ fn main() {
         let (a_markers, b_markers) : (Vec<&Position>, Vec<&Position>) = markers.iter().partition(|x| match x.marker_type {Marker::A => true, _ => false});
 
         a_markers.iter().for_each(|a| b_markers.iter().for_each(|b| {
-            if &a.distance(&b) > &a.distance(&b) {
+            if &a.distance(&b) > &farthest_pair.0.distance(&farthest_pair.1) {
                 farthest_pair = (&a, &b);
             }
         }));
