@@ -8,31 +8,3 @@ fn main() {
 
     println!("solution to part 1: {}, solution to part 2: {}", part_1(&input), part_2(&input));
 }
-
-fn _count_next (input_vec : &Vec<u32>) -> u32 {
-    // let mut sum : u32 = 0;
-
-    // for i in 0..(input_vec.len()) {
-    //     if input_vec[i] == input_vec[(i + 1) % input_vec.len()] {
-    //         sum += input_vec[i];
-    //     }
-    // }
-
-    (0..(input_vec.len())).filter(|i| input_vec[*i] == input_vec[(i + 1) % input_vec.len()]).map(|e| input_vec[e]).sum::<u32>()
-
-    // sum
-}
-
-fn _count_halfway (input_vec : &Vec<u32>) -> u32 {
-	// let mut sum : u32= 0;
-
-    // for i in 0..(input_vec.len() / 2) {
-    // 	if input_vec[i] == input_vec[i + (input_vec.len() / 2)] {
-    // 		sum += input_vec[i] * 2;
-    // 	}
-    // }
-
-    (0..(input_vec.len() / 2)).filter(|i| input_vec[*i] == input_vec[i + (input_vec.len() / 2)]).map(|e| input_vec[e] * 2).sum::<u32>()
-
-    // sum
-}
