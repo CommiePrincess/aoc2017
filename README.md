@@ -3,4 +3,4 @@ my solutions to the advent of code 2017 problems. most of them'll probably be co
 
 ~~yes, i'm hardcoding the inputs into my code.~~  
 okay, about that...
-rust apparently has a really useful ```rust include_str!(filename)``` macro that easily allows you to turn a file's contents into a string (thanks, u/aurele!) 
+rust apparently has a really useful ```rust include_str!(filename)``` macro that easily allows you to turn a file's contents into a string (thanks, u/aurele!) so i'll be using that instead.
