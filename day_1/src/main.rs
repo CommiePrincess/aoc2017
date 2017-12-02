@@ -1,5 +1,5 @@
 fn main() {
-	let input = include_str!("input.txt");
+    let input = include_str!("input.txt");
 
     let input : Vec<u32> = input.chars().map(|c| c.to_digit(10).unwrap()).collect();
 
