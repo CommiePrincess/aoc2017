@@ -5,19 +5,19 @@ fn main() {
     let calculate_checksum = |row : &[u32]| -> u32 {*row.iter().max().unwrap() - *row.iter().min().unwrap()};
 
     let spreadsheet_checksum : u32 = input.iter().map(|l| calculate_checksum(l)).sum();
-    let spreadsheet_checksum_2 : u32 = input.iter().map(|l| calculate_checksum_2(l)).sum();
+    let spreadsheet_checksum_2 : u32 = input.iter().map(|l| calculate_checksum_2(l).unwrap()).sum();
 
     println!("solution to part 1: {}\nsolution to part 2: {}", spreadsheet_checksum, spreadsheet_checksum_2);
 }
 
-fn calculate_checksum_2(row: &[u32]) -> u32 {
+fn calculate_checksum_2 (row: &[u32]) -> Option<u32> {
     for n in row.iter() {
         for i in row.iter() {
-            if n != i && (n % i == 0) {
-                return (n / i) as u32;
+            if (n != i) && (n % i == 0) {
+                return Some((n / i) as u32);
             }
         }
     }
 
-    0
+    None
 }
