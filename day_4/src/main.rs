@@ -38,7 +38,7 @@ fn part_2 (input : &str) -> u32 {
 
         let mut status : bool = true;
 
-        for word in words.iter() {
+        for word in words {
             let mut word_contents : HashMap<char, u32> = HashMap::new();
 
             word.chars().for_each(|c| {
