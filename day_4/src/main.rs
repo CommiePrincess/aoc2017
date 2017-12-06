@@ -15,7 +15,7 @@ fn part_1 (input : &str) -> u32 {
 
         let mut count_inc = 1;
 
-        for w in words {
+        for w in words.iter() {
             if !non_duplicate_words.contains(&w) {
                 non_duplicate_words.push(w);
             } else {
@@ -38,7 +38,7 @@ fn part_2 (input : &str) -> u32 {
 
         let mut status : bool = true;
 
-        for word in words {
+        for word in words.iter() {
             let mut word_contents : HashMap<char, u32> = HashMap::new();
 
             word.chars().for_each(|c| {

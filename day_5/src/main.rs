@@ -28,17 +28,17 @@ fn part_2 (input : &Vec<i32>) -> u32 {
     let mut s = 0;
 
     while index < input.len() {
-        let offset;
+        let change;
 
         if input[index as usize] >= 3 {
-            offset = -1;
+            change = -1;
         }else{
-            offset = 1;
+            change = 1;
         }
 
-        input[index as usize] += offset;
+        input[index as usize] += change;
 
-        index = (index as i32 + input[index] - offset) as usize; 
+        index = (index as i32 + input[index] - change) as usize; 
 
         s += 1;
     }
