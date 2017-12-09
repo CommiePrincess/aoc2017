@@ -28,16 +28,16 @@ fn main() {
 			_ => Box::new(|_: i32, _: i32| -> bool {false}),
 		};
 
-		if comp(*registers.entry(register2.clone()).or_insert(0), cond_val) {
-				if op == "inc" {
-					*registers.entry(register_op.clone()).or_insert(0) += change;
-				}else if op == "dec" {
-					*registers.entry(register_op.clone()).or_insert(0) -= change;
-				}
+		if comp(*registers.entry(register2).or_insert(0), cond_val) {
+			if op == "inc" {
+				*registers.entry(register_op.clone()).or_insert(0) += change;
+			}else if op == "dec" {
+				*registers.entry(register_op.clone()).or_insert(0) -= change;
+			}
 
-				if *registers.get(&register_op).unwrap() > current_highest {
-					current_highest = *registers.get(&register_op).unwrap();
-				}
+			if *registers.get(&register_op).unwrap() > current_highest {
+				current_highest = *registers.get(&register_op).unwrap();
+			}
 		}
 	}
 
