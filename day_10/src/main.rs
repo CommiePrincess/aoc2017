@@ -18,8 +18,8 @@ fn main() {
 
 struct HashList {
     sparse_hash: Vec<u32>,
-    current_position: u32,
-    skip_size: u32,
+    current_position: usize,
+    skip_size: usize,
 }
 
 impl HashList {
@@ -29,20 +29,13 @@ impl HashList {
 
     fn hash_round (&mut self, lengths: &Vec<u8>) {
         for l in lengths.iter() {
-            let list_length : u32 = self.sparse_hash.len() as u32;
-            let mut values : Vec<u32> = Vec::new();
+            let list_length : usize = self.sparse_hash.len();
 
-            for n in self.current_position..self.current_position + *l as u32 {
-                values.push(self.sparse_hash[(n % (self.sparse_hash.len() as u32)) as usize]);
+            for n in 0..(*l as f32 / 2.0).ceil() as usize {
+                self.sparse_hash.swap((self.current_position + n) % list_length, (self.current_position + *l as usize - n - 1) % list_length);
             }
 
-            values.reverse();
-
-            for n in self.current_position..self.current_position + *l as u32 {
-                self.sparse_hash[(n % (list_length as u32)) as usize] = values[n as usize - self.current_position as usize];
-            }
-
-            self.current_position += *l as u32 + self.skip_size;
+            self.current_position += *l as usize + self.skip_size;
             self.skip_size += 1;
         }
     }
@@ -60,15 +53,13 @@ impl HashList {
             dense_hash.push(current_xor as u8);
         }
 
-        let mut dense_hash_str = String::new();
-
-        for i in dense_hash.iter() {
-            let mut c = format!("{:x}", i);
+        let dense_hash_str : String = dense_hash.iter().map(|c| {
+            let mut c = format!("{:x}", c);
 
             if c.len() == 1 { c.insert(0, '0') }
 
-            dense_hash_str += &c;
-        }
+            c
+        }).collect();
         
         dense_hash_str
     }
