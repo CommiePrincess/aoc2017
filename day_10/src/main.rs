@@ -4,8 +4,8 @@ fn main() {
     let mut input_p2 : Vec<u8> = include_str!("input.txt").trim().as_bytes().to_vec();
     input_p2.append(&mut vec![17, 31, 73, 47, 23]);
 
-    let mut list_p1 = HashList::new(256);
-    let mut list_p2 = HashList::new(256);
+    let mut list_p1 = KnotHash::new(256);
+    let mut list_p2 = KnotHash::new(256);
 
     list_p1.hash_round(&input_p1);
 
@@ -16,15 +16,15 @@ fn main() {
     println!("answer for part 1: {}\nanswer for part 2: {}", list_p1.sparse_hash[0] * list_p1.sparse_hash[1], list_p2.dense_hash());
 }
 
-struct HashList {
+struct KnotHash {
     sparse_hash: Vec<u32>,
     current_position: usize,
     skip_size: usize,
 }
 
-impl HashList {
-    fn new (length: u32) -> HashList {
-        HashList {sparse_hash: (0..length).collect(), current_position: 0, skip_size: 0}
+impl KnotHash {
+    fn new (length: u32) -> KnotHash {
+        KnotHash {sparse_hash: (0..length).collect(), current_position: 0, skip_size: 0}
     }
 
     fn hash_round (&mut self, lengths: &Vec<u8>) {
@@ -43,11 +43,11 @@ impl HashList {
     fn dense_hash (&self) -> String {
         let mut dense_hash : Vec<u8> = Vec::new();
 
-        for i in 0..self.sparse_hash.len() / 16 {
-            let mut current_xor = self.sparse_hash[(i * 16)];
+        for c in self.sparse_hash.chunks(16) {
+            let mut current_xor = c[0];
 
             for j in 1..16 {
-                current_xor = current_xor ^ self.sparse_hash[i * 16 + j];
+                current_xor ^= c[j];
             }
 
             dense_hash.push(current_xor as u8);
