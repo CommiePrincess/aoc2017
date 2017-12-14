@@ -13,9 +13,5 @@ fn main() {
 
     list_p1.hash_round();
 
-    for _ in 0..64 {
-        list_p2.hash_round();
-    }
-
-    println!("answer for part 1: {}\nanswer for part 2: {}", list_p1.get_sparse_hash()[0] * list_p1.get_sparse_hash()[1], list_p2.dense_hash());
+    println!("answer for part 1: {}\nanswer for part 2: {}", list_p1.get_sparse_hash()[0] * list_p1.get_sparse_hash()[1], list_p2.full_hash());
 }

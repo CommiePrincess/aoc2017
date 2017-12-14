@@ -1,13 +1,14 @@
 pub struct KnotHash {
     input: Vec<u8>,
     sparse_hash: Vec<u32>,
+    knot_hash: Option<String>,
     current_position: usize,
     skip_size: usize,
 }
 
 impl KnotHash {
     pub fn new (input: Vec<u8>, length: u32) -> KnotHash {
-        KnotHash {input, sparse_hash: (0..length).collect(), current_position: 0, skip_size: 0}
+        KnotHash {input, sparse_hash: (0..length).collect(), knot_hash: None, current_position: 0, skip_size: 0}
     }
 
     pub fn hash_round (&mut self) {
@@ -49,5 +50,17 @@ impl KnotHash {
         }).collect();
         
         dense_hash_str
+    }
+
+    pub fn full_hash (&mut self) -> String {
+        if self.knot_hash == None {
+            for _ in 0..64 {
+                self.hash_round();
+            }
+
+            self.knot_hash = Some(self.dense_hash());
+        }
+
+        self.knot_hash.clone().unwrap()
     }
 }

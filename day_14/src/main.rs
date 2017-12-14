@@ -14,11 +14,7 @@ fn main() {
     
     	let mut kh = KnotHash::new(hash_input, 256);
 
-    	for _ in 0..64 {
-    		kh.hash_round();
-    	}
-
-    	for (index, c) in kh.dense_hash().chars().enumerate() {
+    	for (index, c) in kh.full_hash().chars().enumerate() {
     		let val = c.to_digit(16).unwrap();
 
     		let mut val = format!("{:b}", val);

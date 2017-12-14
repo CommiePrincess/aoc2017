@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::collections::VecDeque;
 
 fn main() {
     let input = include_str!("input.txt").trim();
@@ -10,33 +11,23 @@ fn main() {
         let line : Vec<&str> = i.split_whitespace().collect();
         let mut p = Program::new(line[0].trim().parse().unwrap());
 
-        for j in line.iter().skip(2) {
-            let j : u32 = j.replace(',', "").trim().parse().unwrap();
+        p.connected = line.iter().skip(2).map(|x| x.replace(',', "").trim().parse().unwrap()).collect();
 
-            nodes.entry(j).or_insert(Program::new(j));
-
-            p.connected.push(j);
-        }
-
-        if !nodes.contains_key(&p.id) {
-            nodes.insert(p.id, p.clone());
-        } else {
-            let entry = nodes.entry(line[0].trim().parse().unwrap()).or_insert(Program::new(0));
-            entry.connected = p.connected.clone();
-        }
+        nodes.insert(p.id, p.clone());
     }
 
-    let mut p2 : Vec<u32> = nodes.keys().cloned().collect();
+    let mut p2 : VecDeque<u32> = nodes.keys().cloned().collect();
 
     let mut group_count = 0;
 
     while !p2.is_empty() {
-        let p2_1 = p2.clone();
-        p2.retain(|x| !nodes[&p2_1[0]].get_all_connected(&nodes, vec![]).contains(x));
+        let to_scan = p2.pop_front().unwrap();
+        nodes[&to_scan].scan(&nodes, &mut p2);
+
         group_count += 1;
     }
 
-    println!("answer for part 1: {}\nanswer for part 2: {}", nodes[&0].get_all_connected(&nodes, vec![]).iter().cloned().collect::<HashSet<u32>>().len(), group_count);
+    println!("answer for part 1: {}\nanswer for part 2: {}", nodes[&0].get_group(&nodes).len(), group_count);
 }
 
 #[derive(Clone)]
@@ -50,32 +41,33 @@ impl Program {
         Program {id, connected: Vec::new() }
     }
 
-    fn get_all_connected (&self, nodes: &HashMap<u32, Program>, current: Vec<u32>) -> Vec<u32> {
-        let mut c : Vec<u32> = Vec::new();
+    fn get_group (&self, nodes: &HashMap<u32, Program>) -> HashSet<u32> {
+        let mut queue : VecDeque<u32> = VecDeque::from(vec![self.id]);
+        let mut visited : HashSet<u32> = HashSet::new();
 
-        if !current.contains(&self.id) && !c.contains(&self.id) {
-            c.push(self.id);
-        }
+        while !queue.is_empty() {
+            let current = queue.pop_front().unwrap();
+            visited.insert(current);
 
-        let c2 = c.clone();
-
-        for i in self.connected.iter().filter(|x| !c2.contains(x) && !current.contains(x)) {
-            c.push(nodes[i].id);
-        }
-
-        let mut current = current.clone();
-        let current2 = current.clone();
-
-        let c2 = c.clone();
-
-        for i in self.connected.iter() {
-            for j in nodes[i].connected.iter().filter(|x| !c2.contains(x) && !current2.contains(x)) {
-                c.push(*j);
-                current.append(&mut c.clone());
-                c.append(&mut nodes[i].get_all_connected(nodes, current.clone()).iter().filter(|x| !current.contains(x)).cloned().collect());
+            for c in &nodes[&current].connected {
+                if !visited.contains(c) {
+                    queue.push_back(*c);
+                }
             }
         }
 
-        c
+        visited
+    }
+
+    fn scan (&self, nodes: &HashMap<u32, Program>, queue: &mut VecDeque<u32>) {
+        if queue.contains(&self.id) {
+            queue.retain(|x| *x != self.id);
+        }
+
+        for i in &self.connected {
+            if queue.contains(&i) {
+                nodes[&i].scan(nodes, queue);
+            }
+        }
     }
 }
