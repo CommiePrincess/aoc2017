@@ -12,7 +12,7 @@ fn main() {
     	let pattern_vec : Vec<Vec<bool>> = pattern.split('/').map(|i| i.chars().map(|c| c == '#').collect::<Vec<bool>>()).collect::<Vec<Vec<bool>>>();
     	let replace_vec : Vec<Vec<bool>> = result.split('/').map(|i| i.chars().map(|c| c == '#').collect::<Vec<bool>>()).collect::<Vec<Vec<bool>>>();
 
-    	rules.push(Rule::new(pattern_vec.clone(), replace_vec.clone()));
+    	rules.push(Rule::new(pattern_vec, replace_vec));
     }
 
     for n in 0..18 {
@@ -39,8 +39,7 @@ fn main() {
     			let result = &rules.iter().filter(|r| r.patterns.contains(&scan_grid)).nth(0).unwrap().result;
 
     			for i in 0..result.len() {
-    				let mut l = result[i].clone();
-    				new_grid[y * (m + 1) + i].append(&mut l);
+    				new_grid[y * (m + 1) + i].extend_from_slice(&result[i]);
     			}
     		}
     	}
@@ -55,27 +54,26 @@ fn main() {
     }
 }
 
-fn flip (to_flip: &[Vec<bool>]) -> Vec<Vec<bool>> {
-	to_flip.iter().map(|r| r.iter().rev().cloned().collect::<Vec<bool>>()).collect::<Vec<Vec<bool>>>()
-}
-
 fn transpose (to_transp: &[Vec<bool>]) -> Vec<Vec<bool>> {
 	to_transp.iter().enumerate().map(|(i, r)| r.iter().enumerate().map(|(j, _)| to_transp[j][i]).collect::<Vec<bool>>()).collect::<Vec<Vec<bool>>>()
+}
+
+
+fn flip (to_flip: &[Vec<bool>]) -> Vec<Vec<bool>> {
+	to_flip.iter().map(|r| r.iter().rev().cloned().collect::<Vec<bool>>()).collect::<Vec<Vec<bool>>>()
 }
 
 fn rot_90 (to_rot: &[Vec<bool>]) -> Vec<Vec<bool>> {
 	transpose(to_rot).into_iter().rev().collect::<Vec<Vec<bool>>>()
 }
 
-#[derive(Debug)]
 struct Rule {
 	patterns: HashSet<Vec<Vec<bool>>>,
 	result: Vec<Vec<bool>>,
 }
 
 impl Rule {
-	fn new (pattern: Vec<Vec<bool>>, result: Vec<Vec<bool>>) -> Rule {
-		let mut pattern = pattern;
+	fn new (mut pattern: Vec<Vec<bool>>, result: Vec<Vec<bool>>) -> Rule {
 		let mut patterns = HashSet::new();
 
 		for _ in 0..4 {
@@ -84,6 +82,6 @@ impl Rule {
 			pattern = rot_90(&pattern);
 		}
 
-		Rule {result, patterns}
+		Rule {patterns, result}
 	}
 }
